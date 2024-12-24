@@ -21,7 +21,7 @@ class Scrapper:
             print(f"Error loading page {url}: {e}")
             return ""
 
-    def get_html(self, url_list: Union[str, List[str]]) -> List[str]:
+    def get_html(self, url_list: List[str]) -> List[str]:
         if isinstance(url_list, str):
             url_list = [url_list]
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:

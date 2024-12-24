@@ -1,4 +1,4 @@
-from typing import override
+from typing import Dict, List, Union, override
 
 from bs4 import BeautifulSoup
 
@@ -15,7 +15,7 @@ class NFCePR(NFCe):
         html_soup: BeautifulSoup,
         has_id: bool = True,
         normalize: bool = False,
-    ):
+    ) -> List[Dict[str, Union[str, float]]]:
         items_list = super().get_items_list(html_soup=html_soup, has_id=has_id, normalize=normalize)
 
         for item, tr in zip(items_list, html_soup.find_all("tr", id=has_id)):

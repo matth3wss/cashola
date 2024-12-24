@@ -30,7 +30,7 @@ class RegexPatterns:
         return float(value) if value is not None else None
 
     @classmethod
-    def unit_type(cls, text):
+    def unit_type(cls, text: str) -> str:
         return re.sub(r"UN:", "", text)
 
     @classmethod

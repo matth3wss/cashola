@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, override
+from typing import Union, Dict, List, override
 
 from bs4 import BeautifulSoup
 
@@ -12,7 +12,7 @@ class NFCeMG(NFCe):
         super().__init__()
 
     @override
-    def get_sellers_info(self, html_soup: BeautifulSoup) -> List[Dict[str, str]]:
+    def get_sellers_info(self, html_soup: BeautifulSoup) -> Dict[str, str]:
         sellers_info = super().get_sellers_info(html_soup=html_soup)
 
         sellers_name = html_soup.find("thead").find("h4").getText(strip=True)
@@ -36,7 +36,7 @@ class NFCeMG(NFCe):
         return sellers_info
 
     @override
-    def get_items_list(self, html_soup):
+    def get_items_list(self, html_soup: BeautifulSoup) -> List[Dict[str, Union[str, float]]]:
         items_list = [
             {
                 "item_name": tr.find("h7").get_text(strip=True),
@@ -79,7 +79,7 @@ class NFCeMG(NFCe):
         return items_list
 
     @override
-    def get_receipt_details(self, html_soup: BeautifulSoup):
+    def get_receipt_details(self, html_soup: BeautifulSoup) -> Dict[str, Union[str, int, float]]:
         receipt_details = super().get_receipt_details(html_soup=html_soup)
 
         items_count = int(

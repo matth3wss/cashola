@@ -1,4 +1,4 @@
-from typing import override
+from typing import Dict, Optional, Union, override
 
 from bs4 import BeautifulSoup
 
@@ -10,7 +10,7 @@ class NFCeMS(NFCe):
         super().__init__()
 
     @override
-    def get_receipt_details(self, soup: BeautifulSoup) -> dict:
+    def get_receipt_details(self, soup: BeautifulSoup) -> Dict[str, Optional[Union[str, int, float]]]:
         receipt_details = super().get_receipt_details(soup)
 
         additional_info = (

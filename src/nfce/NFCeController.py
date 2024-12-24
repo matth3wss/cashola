@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List
+from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 
@@ -14,7 +14,9 @@ from .NFCeMT import NFCeMT
 from .NFCePE import NFCePE
 from .NFCePR import NFCePR
 from .NFCeRS import NFCeRS
+from .NFCeSC import NFCeSC
 from .NFCeSE import NFCeSE
+from nfce.NFCe import NFCe
 
 scrapper = Scrapper()
 
@@ -38,10 +40,6 @@ class UrlPatterns:
     SC = re.compile(r"sat\.sef\.sc\.gov\.br/nfce/consulta\?p=\d{44}")
     SE = re.compile(r"nfce\.se\.gov\.br/portal/consultarNFCe\.jsp\?p=\d{44}")
     MT = re.compile(r"sefaz\.mt\.gov\.br/nfce/consultanfce\?p=\d{44}")
-    # "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx?p=43210208407768000609651010004631581904538012|2|1|1|DD7F77804502265D77615FCC294A25AC7865B05A",
-    # "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx?p=43231212340107000168650010001942331011942334|2|1|1|35AC6E329FC6D30C5B920835DF0C3D78B0F66468",
-    # "https://dfe-portal.svrs.rs.gov.br/Dfe/QrCodeNFce?p=43210204583300000100650010016037771292151264|2|1|1|92E231ECA5BD4CE2D345FE70CF811C3C1D6AB717",
-
     RS_V1 = re.compile(
         r"sefaz\.rs\.gov\.br/NFCE/NFCE-COM\.aspx\?p=\d{44}"
     )  # Antes do redirecionamento
@@ -69,6 +67,9 @@ class UrlPatterns:
         elif re.search(cls.PR, url):
             return "PR"
 
+        elif re.search(cls.SC, url):
+            return "SC"
+
         elif re.search(cls.RS_V1, url) or re.search(cls.RS_V2, url):
             return "RS"
 
@@ -79,7 +80,7 @@ class UrlPatterns:
 
 
 class NFCeController:
-    def get_nfce_client_by_state(self, url):
+    def get_nfce_client_by_state(self, url: str) -> NFCe:
         if re.search(UrlPatterns.PB_V1, url):
             url = re.sub(UrlPatterns.PB_V1, re.escape(UrlPatterns.PB_V2.pattern), url)
         if re.search(UrlPatterns.RS_V1, url):
@@ -104,6 +105,9 @@ class NFCeController:
         elif state == "PR":
             return NFCePR()
 
+        elif state == "SC":
+            return NFCeSC()
+
         elif state == "RS":
             return NFCeRS()
 
@@ -113,7 +117,7 @@ class NFCeController:
         else:
             return NFCe()
 
-    def get_receipts(self, urls: List[str]):
+    def get_receipts(self, urls: List[str]) -> List[Dict[str, Any]]:
         htmls = scrapper.get_html(url_list=urls)
 
         purchases_receipts = []

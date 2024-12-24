@@ -15,7 +15,7 @@ class NFCePE(NFCe):
         self,
         soup: BeautifulSoup,
         has_id: bool = False,
-    ) -> List[Dict[str, Union[str, int, float]]]:
+    ) -> List[Dict[str, Union[str, float]]]:
         items_list = super().get_items_list(html_soup=soup, has_id=has_id)
 
         for item, tr in zip(items_list, soup.find_all("tr", id=has_id)):
