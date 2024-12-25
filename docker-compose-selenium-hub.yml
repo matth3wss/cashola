@@ -14,6 +14,7 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_NODE_MAX_SESSIONS=10
+      - SE_NODE_SESSION_TIMEOUT=60
 
   selenium-hub:
     image: selenium/hub:4.23.1-20240813
