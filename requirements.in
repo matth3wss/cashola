@@ -1,6 +1,15 @@
 beautifulsoup4
+cvzone
 Django
+django-browser-reload
+djlint
+Faker
 ipykernel
+opencv-python
+pillow
+pyzbar
 requests
+ruff
 selenium-wire
-setuptools
+qrcode[pil]
+monkeytype
