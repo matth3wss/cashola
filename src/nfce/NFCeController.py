@@ -4,19 +4,15 @@ from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 
+from nfce.NFCe import NFCe
 from scrapper.Scrapper import Scrapper
 
 from .NFCe import NFCe
-from .NFCeAL import NFCeAL
 from .NFCeMG import NFCeMG
 from .NFCeMS import NFCeMS
-from .NFCeMT import NFCeMT
 from .NFCePE import NFCePE
 from .NFCePR import NFCePR
-from .NFCeRS import NFCeRS
-from .NFCeSC import NFCeSC
 from .NFCeSE import NFCeSE
-from nfce.NFCe import NFCe
 
 scrapper = Scrapper()
 
@@ -28,7 +24,7 @@ logger = logging.getLogger(__name__)
 class UrlPatterns:
     # create a pattern for SC, MS, MG and PE using pathlib to get the website withouth the protocol http(s)://www.
 
-    AL = re.compile(r"nfce\.sefaz\.al\.gov\.br/QRCode/consultarNFCe\.jsp\?p=\d{44}")
+    # AL = re.compile(r"nfce\.sefaz\.al\.gov\.br/QRCode/consultarNFCe\.jsp\?p=\d{44}")
     MG = re.compile(
         r"portalsped\.fazenda\.mg\.gov\.br/portalnfce/sistema/qrcode\.xhtml\?p=\d{44}"
     )
@@ -37,9 +33,9 @@ class UrlPatterns:
     PB_V2 = re.compile(r"sefaz\.pb\.gov\.br/nfce\?p=\d{44}")  # NOVO
     PE = re.compile(r"nfce\.sefaz\.pe\.gov\.br/nfce/consulta\?p=\d{44}")
     PR = re.compile(r"fazenda\.pr\.gov\.br/nfce/qrcode\?p=\d{44}")
-    SC = re.compile(r"sat\.sef\.sc\.gov\.br/nfce/consulta\?p=\d{44}")
+    # SC = re.compile(r"sat\.sef\.sc\.gov\.br/nfce/consulta\?p=\d{44}")
     SE = re.compile(r"nfce\.se\.gov\.br/portal/consultarNFCe\.jsp\?p=\d{44}")
-    MT = re.compile(r"sefaz\.mt\.gov\.br/nfce/consultanfce\?p=\d{44}")
+    # MT = re.compile(r"sefaz\.mt\.gov\.br/nfce/consultanfce\?p=\d{44}")
     RS_V1 = re.compile(
         r"sefaz\.rs\.gov\.br/NFCE/NFCE-COM\.aspx\?p=\d{44}"
     )  # Antes do redirecionamento
@@ -49,17 +45,17 @@ class UrlPatterns:
 
     @classmethod
     def get_nfce_state(cls, url: str) -> str:
-        if re.search(cls.AL, url):
-            return "AL"
+        # if re.search(cls.AL, url):
+        #     return "AL"
 
-        elif re.search(cls.MG, url):
+        if re.search(cls.MG, url):
             return "MG"
 
         elif re.search(cls.MS, url):
             return "MS"
 
-        elif re.search(cls.MT, url):
-            return "MT"
+        # elif re.search(cls.MT, url):
+        #     return "MT"
 
         elif re.search(cls.PE, url):
             return "PE"
@@ -67,11 +63,11 @@ class UrlPatterns:
         elif re.search(cls.PR, url):
             return "PR"
 
-        elif re.search(cls.SC, url):
-            return "SC"
+        # elif re.search(cls.SC, url):
+        #     return "SC"
 
-        elif re.search(cls.RS_V1, url) or re.search(cls.RS_V2, url):
-            return "RS"
+        # elif re.search(cls.RS_V1, url) or re.search(cls.RS_V2, url):
+        #     return "RS"
 
         elif re.search(cls.SE, url):
             return "SE"
@@ -87,17 +83,17 @@ class NFCeController:
             url = re.sub(UrlPatterns.RS_V1, re.escape(UrlPatterns.RS_V2.pattern), url)
 
         state = UrlPatterns.get_nfce_state(url)
-        if state == "AL":
-            return NFCeAL()
+        # if state == "AL":
+        #     return NFCeAL()
 
-        elif state == "MG":
+        if state == "MG":
             return NFCeMG()
 
         elif state == "MS":
             return NFCeMS()
 
-        elif state == "MT":
-            return NFCeMT()
+        # elif state == "MT":
+        #     return NFCeMT()
 
         elif state == "PE":
             return NFCePE()
@@ -105,11 +101,11 @@ class NFCeController:
         elif state == "PR":
             return NFCePR()
 
-        elif state == "SC":
-            return NFCeSC()
+        # elif state == "SC":
+        #     return NFCeSC()
 
-        elif state == "RS":
-            return NFCeRS()
+        # elif state == "RS":
+        #     return NFCeRS()
 
         elif state == "SE":
             return NFCeSE()
