@@ -44,7 +44,7 @@ class NFCeSE(NFCe):
             else total_due
         )
 
-        discounts = float(total - total_due) if total and total_due else None
+        discounts = round(float(total - total_due), 2) if total and total_due else None
 
         taxes = (
             regex.monetary_value(
