@@ -57,7 +57,7 @@ class NFCe:
     def get_items_list(
         self,
         html_soup: BeautifulSoup,
-        has_id: bool = False,
+        has_id: bool = True,
         normalize: bool = True,
     ) -> List[
         Union[Dict[str, Optional[Union[str, float]]], Any, Dict[str, Union[str, float]]]
@@ -127,7 +127,7 @@ class NFCe:
             else total_due
         )
 
-        discounts = float(total - total_due) if total and total_due else None
+        discounts = round(float(total - total_due), 2) if total and total_due else None
 
         taxes = (
             regex.monetary_value(
