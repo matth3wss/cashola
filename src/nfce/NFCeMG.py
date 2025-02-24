@@ -102,7 +102,7 @@ class NFCeMG(NFCe):
             .get_text()
         )
 
-        discounts = float(total - total_due) if total and total_due else None
+        discounts = round(float(total - total_due), 2) if total and total_due else None
 
         taxes = "Na nota fiscal usada como referência não tinha impostos, não era possível saber como o imposto está descrito no site."
 
