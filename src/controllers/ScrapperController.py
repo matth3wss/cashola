@@ -11,7 +11,7 @@ class Scrapper:
     def __init__(
         self,
         docker_url: str = "http://localhost:4444/wd/hub",
-        driver_method: str = "docker",
+        driver_method: str = "normal",
     ):
         self.docker_url = docker_url
         if driver_method not in ["docker", "normal"]:
