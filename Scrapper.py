@@ -1,8 +1,11 @@
+import sys
 import time
 
 import streamlit as st
 
-from nfce.NFCeController import NFCeController
+sys.path.append("./src/")
+
+from src.controllers.NFCeController import NFCeController
 
 st.header("Scrapper")
 
