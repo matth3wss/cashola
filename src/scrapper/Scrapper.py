@@ -8,11 +8,20 @@ from selenium.common.exceptions import WebDriverException
 
 
 class Scrapper:
-    @staticmethod
-    def load_html_page(url: str) -> str:
+    def __init__(
+        self,
+        docker_url: str = "http://localhost:4444/wd/hub",
+        driver_method: str = "docker",
+    ):
+        self.docker_url = docker_url
+        if driver_method not in ["docker", "normal"]:
+            raise ValueError("driver_method must be either 'docker' or 'normal'")
+        self.driver_method = driver_method
+
+    def _load_html_page_docker(self, url: str) -> str:
         try:
             options = webdriver.ChromeOptions()
-            driver = webdriver.Remote("http://localhost:4444/wd/hub", options=options)
+            driver = webdriver.Remote(self.docker_url, options=options)
             driver.get(url)
             html = driver.page_source
             driver.quit()
@@ -21,12 +30,30 @@ class Scrapper:
             print(f"Error loading page {url}: {e}")
             return ""
 
+    def _load_html_page_normal(self, url: str) -> str:
+        try:
+            options = webdriver.ChromeOptions()
+            options.add_argument("--headless")
+            driver = webdriver.Chrome(options=options)
+            driver.get(url)
+            html = driver.page_source
+            driver.quit()
+            return html
+        except WebDriverException as e:
+            print(f"Error loading page {url}: {e}")
+            return ""
+
+    def load_html_page(self, url: str) -> str:
+        if self.driver_method == "docker":
+            return self._load_html_page_docker(url)
+        return self._load_html_page_normal(url)
+
     def get_html(self, url_list: List[str]) -> List[str]:
         if isinstance(url_list, str):
             url_list = [url_list]
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        max_workers = 10 if self.driver_method == "docker" else 1
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             htmls = list(executor.map(self.load_html_page, url_list))
-
         return htmls
 
     def decompose_unnecessary_tags(self, html_soup: BeautifulSoup) -> BeautifulSoup:
