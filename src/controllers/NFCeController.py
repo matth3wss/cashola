@@ -3,16 +3,14 @@ import re
 from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
+from ..controllers.ScrapperController import Scrapper
 
-from nfce.NFCe import NFCe
-from scrapper.Scrapper import Scrapper
-
-from .NFCe import NFCe
-from .NFCeMG import NFCeMG
-from .NFCeMS import NFCeMS
-from .NFCePE import NFCePE
-from .NFCePR import NFCePR
-from .NFCeSE import NFCeSE
+from src.nfce.NFCe import NFCe
+from src.nfce.NFCeMG import NFCeMG
+from src.nfce.NFCeMS import NFCeMS
+from src.nfce.NFCePE import NFCePE
+from src.nfce.NFCePR import NFCePR
+from src.nfce.NFCeSE import NFCeSE
 
 scrapper = Scrapper()
 
@@ -115,6 +113,9 @@ class NFCeController:
 
     def get_receipts(self, urls: List[str]) -> List[Dict[str, Any]]:
         htmls = scrapper.get_html(url_list=urls)
+
+        if isinstance(urls, str):
+            urls = [urls]
 
         purchases_receipts = []
         for url, html_soup in zip(urls, htmls):
