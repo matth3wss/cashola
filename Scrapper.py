@@ -70,9 +70,9 @@ selected_url = st.selectbox(
 url = st.text_area(
     label="URL da NFCE",
     key="url_nfce",
-    value=selected_url,
     help="Você pode alterar a URL para testar com outras notas fiscais.",
 )
+
 
 start_time = 0
 end_time = 0
@@ -80,7 +80,7 @@ receipts = None
 
 if st.button("Extrair dados"):
     start_time = time.time()
-    receipts = NFCeController().get_receipts(urls=url)
+    receipts = NFCeController().get_receipts(urls=selected_url if not url else url)
     end_time = time.time()
     st.write(f"Tempo de execução: {end_time - start_time} segundos")
 
