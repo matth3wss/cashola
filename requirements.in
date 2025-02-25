@@ -13,3 +13,4 @@ ruff
 selenium-wire
 qrcode[pil]
 monkeytype
+streamlit
