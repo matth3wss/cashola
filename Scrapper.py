@@ -80,7 +80,11 @@ receipts = None
 
 if st.button("Extrair dados"):
     start_time = time.time()
-    receipts = NFCeController().get_receipts(urls=selected_url if not url else url)
+    if url and url.strip():
+        print(url.strip())
+        receipts = NFCeController().get_receipts(urls=url)
+    else:
+        receipts = NFCeController().get_receipts(urls=selected_url)
     end_time = time.time()
     st.write(f"Tempo de execução: {end_time - start_time} segundos")
 
