@@ -7,8 +7,6 @@ sys.path.append("./src/")
 
 from src.controllers.NFCeController import NFCeController
 
-st.header("Scrapper")
-
 # Dictionary mapping states to their URLs
 state_urls = {
     "AC": [
@@ -56,6 +54,16 @@ state_urls = {
     ],
 }
 
+st.header("Scrapper")
+
+# Add driver method toggle
+driver_method = (
+    "docker"
+    if st.toggle("Usar Docker", value=True, help="Alterne entre modo Docker e local")
+    else "normal"
+)
+
+
 # Add state selection dropdown
 selected_state = st.selectbox(
     "Selecione o estado", options=list(state_urls.keys()), key="state_selector"
@@ -82,9 +90,11 @@ if st.button("Extrair dados"):
     start_time = time.time()
     if url and url.strip():
         print(url.strip())
-        receipts = NFCeController().get_receipts(urls=url)
+        receipts = NFCeController(driver_method=driver_method).get_receipts(urls=url)
     else:
-        receipts = NFCeController().get_receipts(urls=selected_url)
+        receipts = NFCeController(driver_method=driver_method).get_receipts(
+            urls=selected_url
+        )
     end_time = time.time()
     st.write(f"Tempo de execução: {end_time - start_time} segundos")
 
