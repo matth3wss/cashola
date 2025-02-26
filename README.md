@@ -29,6 +29,7 @@ Cashola é um projeto de gerenciamento de finanças pessoais que utiliza dados d
   - Pernambuco (PE)
   - Paraná (PR)
   - Sergipe (SE)
+  - Santa Catarina (SC)
 - Interface web simples para consulta individual de NFC-e
 - Processamento via Selenium Grid
 
@@ -100,7 +101,6 @@ streamlit run Scrapper.py
 - [ ] Dashboard de análise de gastos
 - [ ] Categorização automática de despesas
 - [ ] Tratamento de CAPTCHAs
-- [ ] Processamento em lote de notas fiscais
 
 ## 👥 Contribuições
 
