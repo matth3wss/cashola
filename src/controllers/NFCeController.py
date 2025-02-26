@@ -3,8 +3,8 @@ import re
 from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
-from ..controllers.ScrapperController import Scrapper
 
+from src.controllers.ScrapperController import Scrapper
 from src.nfce.NFCe import NFCe
 from src.nfce.NFCeMG import NFCeMG
 from src.nfce.NFCeMS import NFCeMS
@@ -74,6 +74,9 @@ class UrlPatterns:
 
 
 class NFCeController:
+    def __init__(self, driver_method="normal"):
+        self.scrapper = Scrapper(driver_method=driver_method)
+
     def get_nfce_client_by_state(self, url: str) -> NFCe:
         if re.search(UrlPatterns.PB_V1, url):
             url = re.sub(UrlPatterns.PB_V1, re.escape(UrlPatterns.PB_V2.pattern), url)
@@ -112,7 +115,7 @@ class NFCeController:
             return NFCe()
 
     def get_receipts(self, urls: List[str]) -> List[Dict[str, Any]]:
-        htmls = scrapper.get_html(url_list=urls)
+        htmls = self.scrapper.get_html(url_list=urls)
 
         if isinstance(urls, str):
             urls = [urls]
