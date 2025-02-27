@@ -1,16 +1,8 @@
 beautifulsoup4
-cvzone
-Django
-django-browser-reload
-djlint
-Faker
 ipykernel
-opencv-python
-pillow
-pyzbar
 requests
 ruff
 selenium-wire
-qrcode[pil]
 monkeytype
 streamlit
+st-supabase-connection
