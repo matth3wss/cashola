@@ -2,7 +2,7 @@ beautifulsoup4
 ipykernel
 requests
 ruff
-selenium-wire
+selenium
 monkeytype
 streamlit
 st-supabase-connection
