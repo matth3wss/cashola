@@ -61,7 +61,7 @@ class RegexPatterns:
         return cls._convert_brazilian_number(re.search(cls.CNPJ_PATTERN, text).group())
 
     @classmethod
-    def sellers_address(cls, text: str) -> str:
+    def business_address(cls, text: str) -> str:
         # Primeiro, remove os espaços ao redor das vírgulas e garante uma vírgula com espaço
         text = re.sub(cls.ADDRESS_PATTERN, ", ", text)
         # Em seguida, remove múltiplas vírgulas consecutivas
