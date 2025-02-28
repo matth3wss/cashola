@@ -5,4 +5,5 @@ ruff
 selenium
 monkeytype
 streamlit
-st-supabase-connection
+supabase
+pydantic[email]
