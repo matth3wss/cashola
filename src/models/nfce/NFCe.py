@@ -9,24 +9,26 @@ class NFCe:
     def __init__(self):
         pass
 
-    def get_sellers_info(self, html_soup: BeautifulSoup) -> Dict[str, Optional[str]]:
-        sellers_info = {
-            "sellers_name": html_soup.find("div", class_="txtTopo").get_text(strip=True)
+    def get_business_info(self, html_soup: BeautifulSoup) -> Dict[str, Optional[str]]:
+        business_info = {
+            "business_name": html_soup.find("div", class_="txtTopo").get_text(
+                strip=True
+            )
             if html_soup.find("div", class_="txtTopo")
             else None,
-            "sellers_cnpj": regex._convert_brazilian_number(
+            "business_tax_id": regex._convert_brazilian_number(
                 html_soup.find("div", class_="text").get_text(strip=True)
             )
             if html_soup.find("div", class_="text")
             else None,
-            "sellers_address": regex.sellers_address(
+            "business_address": regex.business_address(
                 html_soup.find_all("div", class_="text")[1].get_text(strip=True)
             )
             if html_soup.find_all("div", class_="text")
             else None,
         }
 
-        return sellers_info
+        return business_info
 
     def merge_item_records(
         self,
@@ -64,7 +66,7 @@ class NFCe:
     ]:
         items_list = [
             {
-                "item_name": tr.find("span", class_="txtTit").get_text(strip=True)
+                "name": tr.find("span", class_="txtTit").get_text(strip=True)
                 if tr.find("span", class_="txtTit")
                 else None,
                 "code": tr.find("span", class_="RCod").get_text(strip=True),
@@ -93,9 +95,11 @@ class NFCe:
         return items_list
 
     def get_receipt_details(
-        self, html_soup: BeautifulSoup
+        self,
+        html_soup: BeautifulSoup,
+        nfce_bpe_link: str,
     ) -> Dict[str, Optional[Union[str, int, float, List[str]]]]:
-        timestamp = regex.purchase_timestamp(html_soup.text)
+        purchased_date = regex.purchase_timestamp(html_soup.text)
 
         items_count = (
             int(
@@ -147,7 +151,7 @@ class NFCe:
             else None
         )
 
-        additional_info = (
+        additional_info = "\n".join(
             next(
                 (
                     [li.text.strip() for li in t.find("ul").find_all("li")]
@@ -166,7 +170,8 @@ class NFCe:
         )
 
         receipt_details = {
-            "timestamp": timestamp,
+            "nfce_bpe_link": nfce_bpe_link,
+            "purchased_date": purchased_date,
             "items_count": items_count,
             "total": total,
             "total_due": total_due,
@@ -178,14 +183,15 @@ class NFCe:
 
         return receipt_details
 
-    def build_receipt(self, html_soup: BeautifulSoup, url: str) -> Dict[str, Any]:
-        sellers_info = self.get_sellers_info(html_soup)
-        receipt_details = self.get_receipt_details(html_soup)
+    def build_receipt(
+        self, html_soup: BeautifulSoup, nfce_bpe_link: str
+    ) -> Dict[str, Any]:
+        business_info = self.get_business_info(html_soup)
+        receipt_details = self.get_receipt_details(html_soup, nfce_bpe_link)
         items_list = self.get_items_list(html_soup)
 
         return {
-            "url": url,
-            "sellers_info": sellers_info,
+            "business_info": business_info,
             "receipt_details": receipt_details,
             "items": items_list,
         }

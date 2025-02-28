@@ -1,5 +1,5 @@
 import re
-from typing import Union, Dict, List, override
+from typing import Dict, List, Union, override
 
 from bs4 import BeautifulSoup
 
@@ -12,34 +12,36 @@ class NFCeMG(NFCe):
         super().__init__()
 
     @override
-    def get_sellers_info(self, html_soup: BeautifulSoup) -> Dict[str, str]:
-        sellers_info = super().get_sellers_info(html_soup=html_soup)
+    def get_business_info(self, html_soup: BeautifulSoup) -> Dict[str, str]:
+        sellers_info = super().get_business_info(html_soup=html_soup)
 
-        sellers_name = html_soup.find("thead").find("h4").getText(strip=True)
+        business_name = html_soup.find("thead").find("h4").getText(strip=True)
 
-        sellers_cnpj = regex.cnpj(
+        business_tax_id = regex.cnpj(
             html_soup.find("tbody")
             .find("td", string=re.compile(regex.CNPJ_PATTERN))
             .getText(strip=True)
         )
 
-        sellers_address = (
+        business_address = (
             html_soup.find("tbody")
             .find("td", {"style": re.compile("font-style: italic;")})
             .getText(strip=True)
         )
 
-        sellers_info["sellers_name"] = sellers_name
-        sellers_info["sellers_cnpj"] = sellers_cnpj
-        sellers_info["sellers_address"] = sellers_address
+        sellers_info["business_name"] = business_name
+        sellers_info["business_tax_id"] = business_tax_id
+        sellers_info["business_address"] = business_address
 
         return sellers_info
 
     @override
-    def get_items_list(self, html_soup: BeautifulSoup) -> List[Dict[str, Union[str, float]]]:
+    def get_items_list(
+        self, html_soup: BeautifulSoup
+    ) -> List[Dict[str, Union[str, float]]]:
         items_list = [
             {
-                "item_name": tr.find("h7").get_text(strip=True),
+                "name": tr.find("h7").get_text(strip=True),
                 "code": re.search(regex.MG_CODE_PATTERN, tr.get_text(strip=True)).group(
                     1
                 ),
@@ -79,7 +81,9 @@ class NFCeMG(NFCe):
         return items_list
 
     @override
-    def get_receipt_details(self, html_soup: BeautifulSoup) -> Dict[str, Union[str, int, float]]:
+    def get_receipt_details(
+        self, html_soup: BeautifulSoup
+    ) -> Dict[str, Union[str, int, float]]:
         receipt_details = super().get_receipt_details(html_soup=html_soup)
 
         items_count = int(
@@ -113,15 +117,13 @@ class NFCeMG(NFCe):
         )
 
         additional_info = next(
-            iter(
-                [
-                    td.text
-                    for td in html_soup.find("th", string="Descrição")
-                    .find_next("tbody")
-                    .find_all("td")
-                    if html_soup.find("th", string="Descrição").find_next("td").text
-                ]
-            ),
+            iter([
+                td.text
+                for td in html_soup.find("th", string="Descrição")
+                .find_next("tbody")
+                .find_all("td")
+                if html_soup.find("th", string="Descrição").find_next("td").text
+            ]),
             None,
         )
 

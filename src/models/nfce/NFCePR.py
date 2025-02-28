@@ -19,7 +19,7 @@ class NFCePR(NFCe):
         items_list = super().get_items_list(html_soup=html_soup, has_id=has_id, normalize=normalize)
 
         for item, tr in zip(items_list, html_soup.find_all("tr", id=has_id)):
-            item["item_name"] = tr.find("span", {"class": "txtTit2"}).get_text(strip=True)
+            item["name"] = tr.find("span", {"class": "txtTit2"}).get_text(strip=True)
 
         items_list = self.merge_item_records(items_list)
 
