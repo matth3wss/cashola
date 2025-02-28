@@ -5,12 +5,12 @@ from typing import Any, Dict, List
 from bs4 import BeautifulSoup
 
 from src.controllers.ScrapperController import Scrapper
-from src.nfce.NFCe import NFCe
-from src.nfce.NFCeMG import NFCeMG
-from src.nfce.NFCeMS import NFCeMS
-from src.nfce.NFCePE import NFCePE
-from src.nfce.NFCePR import NFCePR
-from src.nfce.NFCeSE import NFCeSE
+from src.models.nfce.NFCe import NFCe
+from src.models.nfce.NFCeMG import NFCeMG
+from src.models.nfce.NFCeMS import NFCeMS
+from src.models.nfce.NFCePE import NFCePE
+from src.models.nfce.NFCePR import NFCePR
+from src.models.nfce.NFCeSE import NFCeSE
 
 scrapper = Scrapper()
 
@@ -131,7 +131,7 @@ class NFCeController:
 
                 nfce_instance = self.get_nfce_client_by_state(url)
                 purchase_receipt = nfce_instance.build_receipt(
-                    html_soup=html_soup, url=url
+                    html_soup=html_soup, nfce_bpe_link=url
                 )
 
                 purchases_receipts.append(purchase_receipt)
