@@ -56,13 +56,12 @@ class ExpenseController:
             f"Links already in the database: {set(nfce_bpe_links) - set(unique_bpe_links)}"
         )
 
-        nfce_bpe = self.nfce_client.get_nfce(
+        nfce_bpe, failed_urls = self.nfce_client.get_nfce(
             urls=unique_bpe_links,
         )
 
         for nf in nfce_bpe:
             business_tax_id = nf["business_info"].business_tax_id
-            print(business_tax_id)
 
             if not self.database_client.select(
                 table_name="businesses",
@@ -72,6 +71,8 @@ class ExpenseController:
                 business_id = self.database_client.add_business(
                     business=nf["business_info"]
                 )
+                print(f"{business_id=}", f"{business_tax_id=}")
+
             else:
                 business_id = self.database_client.select(
                     table_name="businesses",
@@ -79,8 +80,11 @@ class ExpenseController:
                     condition={"business_tax_id": business_tax_id},
                 ).data[0]["id"]
 
+                print(f"{business_id=}", f"{business_tax_id=}")
+
             nf["nfce_details"].business_id = business_id
             expense_id = self.database_client.add_expense(expense=nf["nfce_details"])
+            print(f"{expense_id=}")
 
             nf["purchased_items"] = [
                 item.model_copy(update={"expense_id": expense_id})
@@ -88,6 +92,10 @@ class ExpenseController:
             ]
 
             # Add purchased items to database, _ is used to ignore the result and avoid "unused variable" warning
-            _ = self.database_client.add_items(purchased_items=nf["purchased_items"])
+            purchased_items = self.database_client.add_items(
+                purchased_items=nf["purchased_items"]
+            )
+            purchased_item_ids = [item["id"] for item in purchased_items.data]
+            print(f"{purchased_item_ids=}")
 
-        return nfce_bpe
+        return failed_urls
