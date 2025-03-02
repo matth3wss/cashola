@@ -109,6 +109,7 @@ class Expense(BaseModel):
     payment_method: str = "Débito"
     installments: Optional[int] = 1
     additional_info: Optional[str] = None
+    items_count: int = 0
     nfce_bpe_link: Optional[str] = None
     currency: str = "BRL"
     purchase_timestamp: Optional[datetime] = None
