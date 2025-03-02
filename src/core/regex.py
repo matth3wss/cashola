@@ -48,6 +48,7 @@ class RegexPatterns:
         return str(re.sub(r"\D", "", text))
 
     @classmethod
+    # To implement, right now this is supposed to get the code in the format "555 or 855d" from (Código: 555 or 855d)
     def code2(cls, text: str) -> str:
         """Extract product code from text.
         Example: "(Código: 2000134)" -> "2000134"
