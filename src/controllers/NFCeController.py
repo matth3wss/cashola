@@ -114,16 +114,18 @@ class NFCeController:
         else:
             return NFCe()
 
-    def get_nfce(self, urls: Union[str, List[str]]) -> List[Dict[str, Any]]:
+    def get_nfce(self, urls: Union[str, List[str]]) -> Dict[str, Any]:
         htmls = self.scrapper.get_html(url_list=urls)
 
         if isinstance(urls, str):
             urls = [urls]
 
         purchases_receipts = []
+        failed_urls = []
         for url, html_soup in zip(urls, htmls):
             if not html_soup:
                 logger.error(f"Empty HTML for URL: {url}")
+                failed_urls.append(url)
                 continue
             try:
                 html_soup = BeautifulSoup(html_soup, "html.parser")
@@ -137,6 +139,7 @@ class NFCeController:
                 purchases_receipts.append(purchase_receipt)
             except Exception:
                 logger.error(f"Error processing URL: {url}", exc_info=True)
+                failed_urls.append(url)
                 continue  # Continue processing the next URL even if an error occurs
 
-        return purchases_receipts
+        return purchases_receipts, failed_urls
