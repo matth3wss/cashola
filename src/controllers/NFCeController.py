@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from bs4 import BeautifulSoup
 
@@ -114,7 +114,7 @@ class NFCeController:
         else:
             return NFCe()
 
-    def get_receipts(self, urls: List[str]) -> List[Dict[str, Any]]:
+    def get_nfce(self, urls: Union[str, List[str]]) -> List[Dict[str, Any]]:
         htmls = self.scrapper.get_html(url_list=urls)
 
         if isinstance(urls, str):
@@ -130,7 +130,7 @@ class NFCeController:
                 html_soup = scrapper.decompose_unnecessary_tags(html_soup=html_soup)
 
                 nfce_instance = self.get_nfce_client_by_state(url)
-                purchase_receipt = nfce_instance.build_receipt(
+                purchase_receipt = nfce_instance.build_nfce(
                     html_soup=html_soup, nfce_bpe_link=url
                 )
 
