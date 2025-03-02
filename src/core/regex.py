@@ -48,6 +48,18 @@ class RegexPatterns:
         return str(re.sub(r"\D", "", text))
 
     @classmethod
+    def code2(cls, text: str) -> str:
+        """Extract product code from text.
+        Example: "(Código: 2000134)" -> "2000134"
+        Example: "(Código: Gasolina)" -> "Gasolina"
+        """
+        if text:
+            code_match = re.search(r"[\(]?[Cc][oó]digo:?\s*([0-9A-Za-z]+)", text)
+            if code_match:
+                return code_match.group(1)
+        return re.sub(r"[^A-Za-z0-9]", "", text) if text else ""
+
+    @classmethod
     def monetary_value(cls, text: str) -> float:
         cleaned_text = cls._convert_brazilian_number(re.sub(r"[^\d.,]", "", text))
         return float(cleaned_text)
