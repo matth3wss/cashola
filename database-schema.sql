@@ -34,10 +34,9 @@ CREATE UNIQUE INDEX "users_email_unique" ON "users"("email");
 CREATE TABLE "business_categories"(
     "id" BIGINT NOT NULL DEFAULT nextval('business_categories_id_seq'),
     "name" TEXT NOT NULL UNIQUE,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "business_categories" ADD PRIMARY KEY("id");
 
 CREATE TABLE "businesses"(
     "id" BIGINT NOT NULL DEFAULT nextval('businesses_id_seq'),
@@ -49,10 +48,9 @@ CREATE TABLE "businesses"(
     "city" TEXT NULL,
     "state" CHAR(2) NULL,
     "business_category_id" BIGINT NULL,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "businesses" ADD PRIMARY KEY("id");
 -- Add unique constraint on business_tax_id
 ALTER TABLE
     "businesses" ADD CONSTRAINT "businesses_business_tax_id_unique" UNIQUE("business_tax_id");
@@ -62,10 +60,9 @@ CREATE INDEX "businesses_business_name_index" ON
 CREATE TABLE "expense_categories"(
     "id" BIGINT NOT NULL DEFAULT nextval('expense_categories_id_seq'),
     "name" TEXT NOT NULL UNIQUE,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "expense_categories" ADD PRIMARY KEY("id");
 
 CREATE TABLE "purchased_items"(
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -78,10 +75,9 @@ CREATE TABLE "purchased_items"(
     "total_price" DECIMAL(10, 2) NOT NULL,
     "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "main_category_id" BIGINT NULL
+    "main_category_id" BIGINT NULL,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "purchased_items" ADD PRIMARY KEY("id");
 CREATE INDEX "purchased_items_expense_id_index" ON
     "purchased_items"("expense_id");
 CREATE INDEX "purchased_items_name_index" ON
@@ -94,18 +90,16 @@ CREATE INDEX "purchased_items_main_category_id_index" ON
 -- Fixed purchased_item_subcategories with correct composite primary key
 CREATE TABLE "purchased_item_subcategories"(
     "purchased_item_id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "subcategory_id" BIGINT NOT NULL
+    "subcategory_id" BIGINT NOT NULL,
+    PRIMARY KEY("purchased_item_id", "subcategory_id")
 );
-ALTER TABLE
-    "purchased_item_subcategories" ADD PRIMARY KEY("purchased_item_id", "subcategory_id");
 
 CREATE TABLE "income_categories"(
     "id" BIGINT NOT NULL DEFAULT nextval('income_categories_id_seq'),
     "name" TEXT NOT NULL UNIQUE,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "income_categories" ADD PRIMARY KEY("id");
 
 -- Fixed income.income_category_id type to match income_categories.id
 CREATE TABLE "income"(
@@ -114,10 +108,9 @@ CREATE TABLE "income"(
     "name" TEXT NOT NULL,
     "total" DECIMAL(10, 2) NOT NULL,
     "income_category_id" BIGINT NULL,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "income" ADD PRIMARY KEY("id");
 
 -- Recreated expenses table with qrcode_scanned field in a different position
 -- Added purchase_timestamp field to track the actual date and time of purchase
@@ -140,10 +133,9 @@ CREATE TABLE "expenses"(
     "currency" CHAR(3) NULL DEFAULT 'BRL',
     "purchase_timestamp" TIMESTAMP(0) WITHOUT TIME ZONE NULL,
     "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP
+    "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "expenses" ADD PRIMARY KEY("id");
 CREATE INDEX "expenses_bank_account_id_index" ON
     "expenses"("bank_account_id");
 CREATE INDEX "expenses_payment_method_index" ON
@@ -157,10 +149,9 @@ CREATE TABLE "transactions"(
     "amount" DECIMAL(10, 2) NOT NULL,
     "transaction_id" BIGINT NULL,
     "type" SMALLINT NOT NULL,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "transactions" ADD PRIMARY KEY("id");
 COMMENT
 ON COLUMN
     "transactions"."type" IS 'Type of transaction debit or credit';
@@ -173,10 +164,9 @@ CREATE TABLE "installments"(
     "value" DECIMAL(10, 2) NOT NULL,
     "due_date" DATE NULL,
     "paid" BOOLEAN DEFAULT FALSE,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "installments" ADD PRIMARY KEY("id");
 CREATE INDEX "installments_expense_id_index" ON
     "installments"("expense_id");
 
@@ -188,10 +178,9 @@ CREATE TABLE "credit_card_bill_history"(
     "installment_id" BIGINT NULL,
     "total_installments" INTEGER NOT NULL,
     "bill_date" DATE NOT NULL,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "credit_card_bill_history" ADD PRIMARY KEY("id");
 CREATE INDEX "credit_card_bill_history_credit_card_id_index" ON
     "credit_card_bill_history"("credit_card_id");
 CREATE INDEX "credit_card_bill_history_expense_id_index" ON
@@ -205,10 +194,9 @@ CREATE TABLE "credit_cards"(
     "billing_period_end_date" DATE NOT NULL,
     "payment_due_date" DATE NOT NULL,
     "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
-    "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL
+    "updated_at" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "credit_cards" ADD PRIMARY KEY("id");
 
 CREATE TABLE "bank_accounts"(
     "id" BIGINT NOT NULL DEFAULT nextval('bank_accounts_id_seq'),
@@ -217,10 +205,9 @@ CREATE TABLE "bank_accounts"(
     "account_name" TEXT NOT NULL DEFAULT 'bank_name',
     "account_number" TEXT NOT NULL,
     "account_type" TEXT NOT NULL,
-    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMP(0) WITHOUT TIME ZONE NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY("id")
 );
-ALTER TABLE
-    "bank_accounts" ADD PRIMARY KEY("id");
 -- Add unique constraint on account_number
 ALTER TABLE
     "bank_accounts" ADD CONSTRAINT "bank_accounts_account_number_unique" UNIQUE("account_number");
